@@ -6,8 +6,8 @@ from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 
-from .exceptions import CouldntFindDownloadUrl
-from .utils import random_string
+from exceptions import CouldntFindDownloadUrl
+from utils import random_string
 
 
 class MirrorDownloader(ABC):
@@ -35,7 +35,7 @@ class MirrorDownloader(ABC):
         print(f"Downloading '{filename}'")
         data = get(download_url, self.timeout, stream=True)
         save_file(filename, data)
-
+        
     @abc.abstractmethod
     def get_download_url(self, html) -> Optional[str]:
         """Returns the URL from where to download the

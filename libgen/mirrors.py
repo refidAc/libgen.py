@@ -6,16 +6,19 @@ import sys
 import os
 from abc import ABC
 from typing import Any, Dict, Generator, List, Optional, Tuple
-
+from mega import Mega
 import bs4
 import requests
 from beautifultable import BeautifulTable
 from bs4 import BeautifulSoup
 from requests.exceptions import Timeout
-
-from . import downloaders
-from .exceptions import CouldntFindDownloadUrl, NoResults
-from .publication import Publication
+import downloaders
+from exceptions import CouldntFindDownloadUrl, NoResults
+from publication import Publication
+import zipfile
+from multiprocessing.pool import ThreadPool
+from threading import Thread
+import quickmega
 
 RE_ISBN = re.compile(
     r"(ISBN[-]*(1[03])*[ ]*(: ){0,1})*" +
@@ -23,13 +26,13 @@ RE_ISBN = re.compile(
 )
 
 RE_EDITION = re.compile(r"(\[[0-9] ed\.\])")
-
+idkwhytest = ''
 
 class Mirror(ABC):
 
     def __init__(self, search_url: str) -> None:
         self.search_url = search_url
-
+        # self.pool = ThreadPool(processes=50)
     @staticmethod
     def get_href(cell) -> Optional[str]:
         links = cell.find_all('a', href=True)
@@ -54,7 +57,9 @@ class Mirror(ABC):
             values.append(attrs)
         return (list(headers), values)
 
-    def run(self, non_interactive=False):
+    def run(self, non_interactive=False, zip_file=False):
+        # threads=[]
+        files = []
         try:
             for publications in self.search():
                 if non_interactive:
@@ -63,7 +68,42 @@ class Mirror(ABC):
                     selected = self.select(publications)
 
                 if selected:
-                    self.download(selected)
+                    basedir = os.getcwd()
+                    if zip_file:
+                        myzip = zipfile.ZipFile(os.path.join(basedir,str(self.search_term)+".zip"), "w")
+                    for p in selected:
+                        t = copy.deepcopy(p.attributes)
+                        self.download(p)
+                        name = self.filter_filename(p.filename())
+                        
+                        if t['extension'] != 'pdf':
+                            new_file = t['title']+".pdf"
+                            cmd = "ebook-convert "+"'"+name+"'"+" "+"'"+new_file+"'"
+                            # cmd = "ebook-convert "+str(fullpath)+" "+str(os.path.join(basedir,t['title']+".pdf"))
+                            print('beginning book conversion to pdf..')
+                            os.system(cmd)
+                            fullpath = os.path.join(basedir,new_file)
+                        else:
+                            fullpath = os.path.join(basedir,name)
+                        files.append(fullpath)
+                        #zip all the files
+                        if zip_file:
+                            myzip.write(os.path.join(basedir,name),name,compress_type = zipfile.ZIP_DEFLATED)
+                    if True:
+                        #Upload to mega, print info
+                        mega_link = self.upload_files(files)
+                        for p in selected:
+                            t = copy.deepcopy(p.attributes)
+                            print ("Title: {}\nAuthors: {}\nFormat: {}\nDescription: Requested by \nLink:{}".format(
+                                t['title'], t['authors'],'pdf',mega_link.pop(0)
+                            ))
+                        
+
+                    # for process in threads:
+                    #     process.join()
+                    # for p in selected:
+                        # os.remove(os.path.join(basedir,p.filename()))
+
                     # TODO: 'Downloaded X MB in Y seconds.'
                     break
         except NoResults as e:
@@ -163,11 +203,15 @@ class Mirror(ABC):
         while True:
             try:
                 choice = input('Choose publication by ID: ')
-                publications = [p for p in publications if p.id == choice]
-                if not publications:
+                if int(choice) == 0:
+                    publications = [p for p in publications]
+                else:
+                    publications = [p for p in publications if p.id == choice]
+
+                if not publications: 
                     raise ValueError
                 else:
-                    return publications[0]
+                    return publications
             except ValueError:
                 print('Invalid choice. Try again.')
                 continue
@@ -200,6 +244,26 @@ class Mirror(ABC):
                 print("Trying a different mirror.")
                 continue
             print("Failed to download publications.")
+    #TODO: Test This 
+    def upload_files(self, listOfFiles):
+        
+        print ("Beginning upload to mega")
+        email = os.environ['MEGA_USER']
+        password = os.environ['MEGA_PASS']
+        mega = Mega()
+        m = mega.login(email, password)
+        folder = m.find('books')
+        links =[]
+        for file in listOfFiles:
+            f = m.upload(file,folder[0])
+            links.append(m.get_upload_link(f))
+        print("finished")
+        return links
+    def filter_filename(self, filename: str):
+        """Filters a filename non alphabetic and non delimiters charaters."""
+        valid_chars = '-_.() '
+        return ''.join(c for c in filename if c.isalnum() or c in valid_chars)
+
 
 
 class GenLibRusEc(Mirror):

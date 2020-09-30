@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional
 
-from .utils import random_string
+from utils import random_string
 
 
 class Publication(object):
