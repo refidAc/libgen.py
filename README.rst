@@ -8,9 +8,10 @@ Modifications:
 
 + 0 at "input id" stage leads to downloading all items displayed.
 
+
 + --zip optional argument
 
-+ todo: added automatic upload to enviornment "MEGA_USER" & "MEGA_PASS", need to update requirements.txt
++ todo: added automatic upload to enviornment "MEGA_USER" & "MEGA_PASS", need to update requirements.txt --convert to convert download to pdf
 
 
 Installation
