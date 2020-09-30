@@ -2,9 +2,14 @@ libgen.py |PyPy Package| |Build Status| |License: MIT|
 ======================================================
 
 A script to download books from gen.lib.rus.ec, libgen.io, libgen.pw, b-ok.org and bookfi.net.
+
+
 Modifications:
+
 + 0 at "input id" stage leads to downloading all items displayed.
+
 + --zip optional argument
+
 + todo: added automatic upload to enviornment "MEGA_USER" & "MEGA_PASS", need to update requirements.txt
 
 
