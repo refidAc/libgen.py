@@ -14,7 +14,7 @@ Modifications:
 
 + --upload optinal argument, requires "MEGA_USER" & "MEGA_PASS" environment variable to be set, and folder called "books" in main directory of Mega Upload.
 
-+TODO: fix so it works as pip install again
++TODO: fix so it works as pip install again and installs calibre lite for cli
 
 
 
