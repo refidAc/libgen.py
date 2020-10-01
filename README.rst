@@ -2,6 +2,8 @@
 
 Modifications:
 
++ Progress for each download
+
 + 0 at "input id" stage leads to downloading all items displayed.
 
 + --zip optional argument
