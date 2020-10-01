@@ -10,7 +10,8 @@ Modifications:
 
 + --upload optinal argument, requires "MEGA_USER" & "MEGA_PASS" environment variable to be set, uploads files to new /books/<search_term> folder in MegaSync
 
-+TODO: fix so it works as pip install again and installs calibre lite for cli
+
++TODO: fix for pip, fix to work with calibre
 
 
 
