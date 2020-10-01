@@ -102,6 +102,8 @@ class Mirror(ABC):
                             print ("Title: {}\nAuthors: {}\nFormat: {}\nDescription: Requested by \nLink:{}".format(
                                 t['title'], t['authors'],'pdf',mega_link.pop(0)
                             ))
+                        for file in files:
+                            os.remove(file)
                     # TODO: 'Downloaded X MB in Y seconds.'
                     break
         except NoResults as e:
@@ -249,10 +251,21 @@ class Mirror(ABC):
         password = os.environ['MEGA_PASS']
         mega = Mega()
         m = mega.login(email, password)
-        folder = m.find('books')
+
+        folder = m.find('books') 
+        if folder == None: 
+            m.create_folder('books')
+            folder = m.find('books')
+
+        fol_name = str(self.search_term)
+        new_folder = m.find(fol_name)
+        if new_folder == None:
+            m.create_folder(fol_name,folder[0])
+            new_folder = m.find(fol_name)
+    
         links =[]
         for file in listOfFiles:
-            f = m.upload(file,folder[0])
+            f = m.upload(file,new_folder[0])
             links.append(m.get_upload_link(f))
         print("finished")
         return links
