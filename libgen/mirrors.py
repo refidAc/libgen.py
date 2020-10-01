@@ -64,12 +64,8 @@ class Mirror(ABC):
                     selected = publications[0]
                 else:
                     selected = self.select(publications)
-
                 if selected:
                     basedir = os.getcwd()
-                    if zip_file:
-                        # myzip = zipfile.ZipFile(os.path.join(basedir,str(self.search_term)+".zip"), "w")
-                        myzip = str(os.path.join(basedir,str(self.search_term)))+".zip"
                     for p in selected:
                         t = copy.deepcopy(p.attributes)
                         self.download(p)
@@ -89,6 +85,7 @@ class Mirror(ABC):
                         files.append(fullpath)
                         #zip all the files
                         if zip_file:
+                            myzip = str(os.path.join(basedir,str(self.search_term)))+".zip"
                             with zipfile.ZipFile(myzip, 'w') as file:
                                 file.write(os.path.join(basedir,name),name,compress_type = zipfile.ZIP_DEFLATED)
                             #remove zipped file copy
