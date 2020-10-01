@@ -88,7 +88,6 @@ class Mirror(ABC):
                             myzip = str(os.path.join(basedir,str(self.search_term)))+".zip"
                             with zipfile.ZipFile(myzip, 'w') as file:
                                 file.write(os.path.join(basedir,name),name,compress_type = zipfile.ZIP_DEFLATED)
-                            #remove zipped file copy
                             os.remove(name)
                     if do_upload:
                         #Upload to mega, print info
@@ -103,13 +102,6 @@ class Mirror(ABC):
                             print ("Title: {}\nAuthors: {}\nFormat: {}\nDescription: Requested by \nLink:{}".format(
                                 t['title'], t['authors'],'pdf',mega_link.pop(0)
                             ))
-                        
-
-                    # for process in threads:
-                    #     process.join()
-                    # for p in selected:
-                        # os.remove(os.path.join(basedir,p.filename()))
-
                     # TODO: 'Downloaded X MB in Y seconds.'
                     break
         except NoResults as e:
@@ -250,9 +242,8 @@ class Mirror(ABC):
                 print("Trying a different mirror.")
                 continue
             print("Failed to download publications.")
-    #TODO: Test This 
+
     def upload_files(self, listOfFiles):
-        
         print ("Beginning upload to mega")
         email = os.environ['MEGA_USER']
         password = os.environ['MEGA_PASS']
@@ -265,6 +256,8 @@ class Mirror(ABC):
             links.append(m.get_upload_link(f))
         print("finished")
         return links
+
+
     def filter_filename(self, filename: str):
         """Filters a filename non alphabetic and non delimiters charaters."""
         valid_chars = '-_.() '
