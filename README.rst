@@ -1,7 +1,3 @@
-libgen.py |PyPy Package| |Build Status| |License: MIT|
-======================================================
-
-A script to download books from gen.lib.rus.ec, libgen.io, libgen.pw, b-ok.org and bookfi.net.
 
 
 Modifications:
@@ -16,6 +12,13 @@ Modifications:
 
 +TODO: fix so it works as pip install again and installs calibre lite for cli
 
+
+
+libgen.py |PyPy Package| |Build Status| |License: MIT|
+======================================================
+
+
+A script to download books from gen.lib.rus.ec, libgen.io, libgen.pw, b-ok.org and bookfi.net.
 
 
 Installation
