@@ -57,7 +57,7 @@ class Mirror(ABC):
             values.append(attrs)
         return (list(headers), values)
 
-    def run(self, non_interactive=False, zip_file=False):
+    def run(self, non_interactive=False, zip_file=False, do_upload=False, do_convert=False):
         # threads=[]
         files = []
         try:
@@ -76,7 +76,7 @@ class Mirror(ABC):
                         self.download(p)
                         name = self.filter_filename(p.filename())
                         
-                        if t['extension'] != 'pdf':
+                        if (t['extension'] != 'pdf') and do_convert:
                             new_file = t['title']+".pdf"
                             cmd = "ebook-convert "+"'"+name+"'"+" "+"'"+new_file+"'"
                             # cmd = "ebook-convert "+str(fullpath)+" "+str(os.path.join(basedir,t['title']+".pdf"))
@@ -89,9 +89,12 @@ class Mirror(ABC):
                         #zip all the files
                         if zip_file:
                             myzip.write(os.path.join(basedir,name),name,compress_type = zipfile.ZIP_DEFLATED)
-                    if True:
+                    if do_upload:
                         #Upload to mega, print info
-                        mega_link = self.upload_files(files)
+                        if zip_file:
+                            mega_link = self.upload_files([str(os.path.join(basedir,name))+".zip",])
+                        else:
+                            mega_link = self.upload_files(files)
                         for p in selected:
                             t = copy.deepcopy(p.attributes)
                             print ("Title: {}\nAuthors: {}\nFormat: {}\nDescription: Requested by \nLink:{}".format(
