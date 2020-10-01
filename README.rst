@@ -4,7 +4,11 @@ Modifications:
 
 + Progress for each download
 
-+ 0 at "input id" stage leads to downloading all items displayed.
++ 'all' at "input id" stage leads to downloading all items displayed.
+
++ downloads are made using "alt_id" column instead of original "id" column
+
++ download multiple files by entering comma separated ids 
 
 + --zip optional argument
 
