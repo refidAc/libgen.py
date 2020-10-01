@@ -167,6 +167,7 @@ class Mirror(ABC):
             if header in unsorted_headers:
                 sorted_headers.append(header)
                 unsorted_headers.remove(header)
+        sorted_headers.append('alt_id')
         # alphabetize the rest
         sorted_headers += sorted(unsorted_headers)
 
@@ -186,6 +187,7 @@ class Mirror(ABC):
         table.column_separator_char = '│'
 
         # build a table using order of sorted_headers and blank out missing data
+        count=0
         for row in rows:
             expanded_row = []
             for key in sorted_headers:
@@ -194,8 +196,11 @@ class Mirror(ABC):
                         expanded_row.append(','.join(row[key]))
                     else:
                         expanded_row.append(row[key])
+                elif key == 'alt_id':
+                    expanded_row.append(count)
                 else:
                     expanded_row.append('')
+            count+=1
             table.append_row(expanded_row)
 
         print(table)
@@ -203,11 +208,16 @@ class Mirror(ABC):
         while True:
             try:
                 choice = input('Choose publication by ID: ')
-                if int(choice) == 0:
+                temp = [p for p in publications]
+                if choice == 'all':
                     publications = [p for p in publications]
                 else:
-                    publications = [p for p in publications if p.id == choice]
-
+                    choice = str(choice)
+                    choice = choice.split(',')
+                    publications=[]
+                    for c in choice:
+                        publications.append(temp[int(c)])
+                    # print(str(publications))
                 if not publications: 
                     raise ValueError
                 else:
