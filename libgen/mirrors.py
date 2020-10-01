@@ -348,8 +348,8 @@ class GenLibRusEc(Mirror):
 
         # TODO: each of these _url can be None
         attrs['mirrors'] = {
+                'libgen.pw': downloaders.LibgenIoDownloader(libgen_pw_url),
                 'libgen.io': downloaders.LibgenIoDownloader(libgen_io_url),
-                'libgen.pw': downloaders.LibgenPwDownloader(libgen_pw_url),
                 'b-ok.org': downloaders.BOkOrgDownloader(bok_org_url),
                 'bookfi.net': downloaders.BookFiNetDownloader(bookfi_net_url)
         }
