@@ -1,6 +1,4 @@
 *.pyc
 .vscode/*
-.*/
-!/.gitignore
-.vscode/settings.json
+.vscode
 *.zip
