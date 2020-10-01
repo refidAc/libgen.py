@@ -8,10 +8,10 @@ Modifications:
 
 + --convert optional argument, converts all to pdf, requires calibre 'ebook-convert' cli with path set ; deletes original file format
 
-+ --upload optinal argument, requires "MEGA_USER" & "MEGA_PASS" environment variable to be set, uploads files to new /books/<search_term> folder in MegaSync
++ --upload optinal argument, requires "MEGA_USER" & "MEGA_PASS" environment variable to be set, uploads files to new /books/<search_term> folder in MegaSync ; deletes local file
 
 
-+TODO: fix for pip, fix to work with calibre
++TODO: fix for pip
 
 
 
