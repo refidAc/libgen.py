@@ -3,6 +3,7 @@ import os.path
 from abc import ABC
 from typing import Optional
 
+from tqdm import tqdm
 import requests
 from bs4 import BeautifulSoup
 
@@ -105,11 +106,17 @@ def filter_filename(filename: str):
 def save_file(filename: str, data: requests.models.Response):
     """Saves a file to the current directory."""
     filename = filter_filename(filename)
+    file_size = int(data.headers.get('content-length', 0))
     try:
         with open(filename, 'wb') as f:
-            for chunk in data.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
+            with tqdm(total=file_size, unit='B',
+                  unit_scale=True, unit_divisor=1024,
+                  desc=filename, initial=0,
+                  ascii=True, miniters=1) as pbar:
+                for chunk in data.iter_content(chunk_size=1024):
+                    if chunk:
+                        f.write(chunk)
+                        pbar.update(len(chunk))
         print(f"Saved file as '{filename}'")
     except OSError as exc:
         if exc.errno == 36:  # filename too long
