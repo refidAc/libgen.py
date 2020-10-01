@@ -16,9 +16,7 @@ import downloaders
 from exceptions import CouldntFindDownloadUrl, NoResults
 from publication import Publication
 import zipfile
-from multiprocessing.pool import ThreadPool
-from threading import Thread
-import quickmega
+
 
 RE_ISBN = re.compile(
     r"(ISBN[-]*(1[03])*[ ]*(: ){0,1})*" +

@@ -2,3 +2,4 @@ beautifulsoup4==4.7.1
 beautifultable==0.7.0
 requests==2.21.0
 lxml==4.3.2
+mega.py==1.0.8
