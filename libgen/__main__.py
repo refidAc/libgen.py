@@ -38,9 +38,9 @@ def main():
     p = argparse.ArgumentParser(description='Read more, kids.')
     p.add_argument('-s', '--search', dest='search', required=True, help='search term')
     p.add_argument('-n', '--non-interactive', dest='non_interactive', help='non interactive mode, download first available choice', action='store_true', default=False)
-    p.add_argument('-z', '--zip', dest='zip_file', help='archive all downloads into a zipfile', default=False)
-    p.add_argument('-u', '--upload', dest='do_upload', help='upload files at the end', default=False)
-    p.add_argument('-c', '--convert', dest='do_convert', help='convert all downloads into a zipfile', default=False)
+    p.add_argument('-z', '--zip', dest='zip_file', help='archive all downloads into a zipfile',action='store_true', default=False)
+    p.add_argument('-u', '--upload', dest='do_upload', help='upload files at the end',action='store_true', default=False)
+    p.add_argument('-c', '--convert', dest='do_convert', help='convert all downloads into a zipfile', action = 'store_true',default=False)
     args = p.parse_args()
     MirrorFinder().run(args.search, args.non_interactive, args.zip_file, args.do_upload, args.do_convert)
 

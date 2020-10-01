@@ -70,29 +70,37 @@ class Mirror(ABC):
                 if selected:
                     basedir = os.getcwd()
                     if zip_file:
-                        myzip = zipfile.ZipFile(os.path.join(basedir,str(self.search_term)+".zip"), "w")
+                        # myzip = zipfile.ZipFile(os.path.join(basedir,str(self.search_term)+".zip"), "w")
+                        myzip = str(os.path.join(basedir,str(self.search_term)))+".zip"
                     for p in selected:
                         t = copy.deepcopy(p.attributes)
                         self.download(p)
                         name = self.filter_filename(p.filename())
-                        
+                        new_file = t['title']+".pdf"
+                        # Do Convert to pdf , requires calibre ebook-convert cli 
                         if (t['extension'] != 'pdf') and do_convert:
-                            new_file = t['title']+".pdf"
                             cmd = "ebook-convert "+"'"+name+"'"+" "+"'"+new_file+"'"
-                            # cmd = "ebook-convert "+str(fullpath)+" "+str(os.path.join(basedir,t['title']+".pdf"))
                             print('beginning book conversion to pdf..')
                             os.system(cmd)
                             fullpath = os.path.join(basedir,new_file)
+                            #Remove old file of old format
+                            os.remove(name)
+                            name = new_file
                         else:
                             fullpath = os.path.join(basedir,name)
                         files.append(fullpath)
                         #zip all the files
                         if zip_file:
-                            myzip.write(os.path.join(basedir,name),name,compress_type = zipfile.ZIP_DEFLATED)
+                            with zipfile.ZipFile(myzip, 'w') as file:
+                                file.write(os.path.join(basedir,name),name,compress_type = zipfile.ZIP_DEFLATED)
+                            #remove zipped file copy
+                            os.remove(name)
                     if do_upload:
                         #Upload to mega, print info
                         if zip_file:
-                            mega_link = self.upload_files([str(os.path.join(basedir,name))+".zip",])
+                            files = []
+                            files.append(str(self.search_term)+".zip")
+                            mega_link = self.upload_files(files)
                         else:
                             mega_link = self.upload_files(files)
                         for p in selected:
