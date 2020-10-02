@@ -113,10 +113,13 @@ def save_file(filename: str, data: requests.models.Response):
                   unit_scale=True, unit_divisor=1024,
                   desc=filename, initial=0,
                   ascii=True, miniters=1) as pbar:
+                pbar.format_meter(n=file_size,total=file_size,elapsed=pbar.format_dict['elapsed'],initial=0,ascii=True,unit_divisor=1024,unit_scale=True, unit='B',miniters=1)
+
                 for chunk in data.iter_content(chunk_size=1024):
                     if chunk:
                         f.write(chunk)
                         pbar.update(len(chunk))
+                        
         print(f"Saved file as '{filename}'")
     except OSError as exc:
         if exc.errno == 36:  # filename too long
