@@ -63,6 +63,7 @@ class Mirror(ABC):
                 if non_interactive:
                     selected = publications[0]
                 else:
+                    #Optimize : fix to return table
                     selected = self.select(publications)
                 if selected:
                     basedir = os.getcwd()
@@ -156,8 +157,7 @@ class Mirror(ABC):
         """
 
         preferred_order = [
-            'id', 'title', 'authors', 'pages', 'extension', 'size', 'series',
-            'publisher', 'lang', 'isbn'
+            'id', 'title', 'authors', 'extension', 'size'
         ]
 
         unsorted_headers, rows = Mirror.get_headers_values(publications)
@@ -167,11 +167,13 @@ class Mirror(ABC):
             if header in unsorted_headers:
                 sorted_headers.append(header)
                 unsorted_headers.remove(header)
-        sorted_headers.append('alt_id')
+        sorted_headers.insert(0,'alt_id')
+        
         # alphabetize the rest
-        sorted_headers += sorted(unsorted_headers)
-
-        term_c, term_r = os.get_terminal_size(0)
+        # sorted_headers += sorted(unsorted_headers)
+        
+        term_c, term_r = 160, 48
+        
         table = BeautifulTable(
             default_alignment=BeautifulTable.ALIGN_LEFT,
             max_width=term_c - 1
@@ -202,8 +204,9 @@ class Mirror(ABC):
                     expanded_row.append('')
             count+=1
             table.append_row(expanded_row)
-
+    
         print(table)
+        
 
         while True:
             try:
